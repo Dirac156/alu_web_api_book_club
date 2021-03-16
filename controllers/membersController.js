@@ -111,3 +111,38 @@ export async function updateMember(req, res) {
     }
 }
 
+//Delete a member
+export async function deleteMember(req, res) {
+    try{
+        let member = await Member.findAll({where: {member_id: req.params.id}});
+        if (member) {
+            await Member.destroy({where : {member_id: req.params.id}})
+            .then(num => {
+                if (num === 1){
+                    res.json({
+                        success: true, 
+                        message: `Member deleted succusfully`
+                    })
+                } else {
+                    res.json({
+                        success: false, 
+                        message: `Member was not deleted`
+                    })
+                }
+            });
+            
+        } else {
+            res.json({
+                success: false,
+                message: 'No Member records found.',
+            })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            success: false,
+            message: "Oopss! Something is wrong..."
+        })
+    }
+}
+
